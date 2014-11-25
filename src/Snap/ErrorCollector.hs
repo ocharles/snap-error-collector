@@ -1,8 +1,33 @@
 {-# LANGUAGE RecordWildCards #-}
+{-|
+
+@snap-error-collector@ extends a 'Snap' application with the ability to monitor
+requests for uncaught exceptions. All routes are wrapped with an exception
+handler, and exceptions are queued (and optionally filtered). Periodically,
+the exception queue is flushed via an 'IO' computation - you can use this
+to send emails, notify yourself on Twitter, increment counters, etc.
+
+Example:
+
+@
+import "Snap.ErrorCollector"
+
+initApp :: 'Snap.Initializer' MyApp MyApp
+initApp = do
+  ...
+  'collectErrors' 'ErrorCollectorConfig'
+    { 'ecFlush' = emailOpsTeam
+    , 'ecFlushInterval' = 60000000
+    , 'ecFilter' = 'const' 'True'
+    }
+@
+
+-}
 module Snap.ErrorCollector
   ( collectErrors
   , LoggedException(..)
   , ErrorCollectorConfig(..)
+  , basicConfig
   ) where
 
 import Control.Applicative
@@ -19,12 +44,15 @@ import qualified Control.Monad.CatchIO as MCIO
 import qualified Data.Time as Time
 import qualified Snap
 
+-- | An exception logged by @snap-error-collector@, tagged with the request that
+-- caused the exception, and the time the exception occured.
 data LoggedException = LoggedException
   { leException :: !SomeException
   , leLoggedAt :: !Time.UTCTime
   , leRequest :: !Snap.Request
   } deriving (Show)
 
+-- | How @snap-error-collector@ should run.
 data ErrorCollectorConfig = ErrorCollectorConfig
   { ecFlush :: !(Time.UTCTime -> Seq LoggedException -> IO ())
     -- ^ An IO action to perform with the list of exceptions that were
@@ -43,6 +71,13 @@ data ErrorCollectorConfig = ErrorCollectorConfig
     -- not.
   }
 
+-- | A convenient constructor for 'ErrorCollectorConfig' that collects all
+-- exceptions and flushes the queue every minute. You have to supply the
+-- 'IO' action to run when the queue is flushed.
+basicConfig :: (Time.UTCTime -> Seq LoggedException -> IO ()) -> ErrorCollectorConfig
+basicConfig m = ErrorCollectorConfig m 60000000 (const True)
+
+-- | Wrap a 'Snap' website to collect errors.
 collectErrors :: ErrorCollectorConfig -> Snap.Initializer b v ()
 collectErrors ErrorCollectorConfig{..} =
   do q <- liftIO STM.newTQueueIO
