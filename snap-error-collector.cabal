@@ -1,5 +1,5 @@
 name: snap-error-collector
-version: 1.0.0
+version: 1.1.0
 synopsis: Collect errors in batches and dispatch them
 homepage: http://github.com/ocharles/snap-error-collector
 license: BSD3
