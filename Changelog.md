@@ -1,3 +1,7 @@
+# 1.1.1
+
+* Increase upper bound on `base`, `snap`, `time`, `transformers`.
+
 # 1.1.0
 
 * Add an upper bound on the amount of errors collected. This means that even
