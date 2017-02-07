@@ -1,3 +1,9 @@
+# 1.1.2
+
+* Increase upper bound on `base`, `async`, `snap`, `time` and `transformers`.
+* `lifted-base` is now used instead of `MonadCatchIO-transformers`, as it is
+  actively maintained.
+
 # 1.1.1
 
 * Increase upper bound on `base`, `snap`, `time`, `transformers`.
