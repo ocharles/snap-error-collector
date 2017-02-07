@@ -46,7 +46,7 @@ import Data.Sequence as Seq
 
 import qualified Control.Concurrent.Async as Async
 import qualified Control.Concurrent.STM as STM
-import qualified Control.Monad.CatchIO as MCIO
+import qualified Control.Exception.Lifted as MCIO
 import qualified Data.Time as Time
 import qualified Snap
 
