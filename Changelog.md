@@ -1,3 +1,11 @@
+# 1.1.4
+
+## Other Changes
+
+* Increase the upper bound of `base`.
+
+---
+
 # 1.1.3
 
 ## Other Changes
