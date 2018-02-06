@@ -1,3 +1,9 @@
+# 1.1.5
+
+* Increase the upper bound of `snap`, `time` and `async`.
+
+---
+
 # 1.1.4
 
 ## Other Changes
